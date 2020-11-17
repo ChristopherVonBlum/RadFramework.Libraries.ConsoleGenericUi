@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RadFramework.Libraries.ConsoleGenericUi", "RadFramework.Libraries.ConsoleGenericUi\RadFramework.Libraries.ConsoleGenericUi.csproj", "{D9F78D28-3962-4052-AD6E-D6A8ABA0AD17}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RadFramework.Libraries.ConsoleGenericUi.Tests", "RadFramework.Libraries.ConsoleGenericUi.Tests\RadFramework.Libraries.ConsoleGenericUi.Tests.csproj", "{518DB1F9-D8E0-42F7-84F7-0D280134CC3C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "POC", "POC\POC.csproj", "{128DC24D-77A5-4CF3-A489-F5D6B32E7D09}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D9F78D28-3962-4052-AD6E-D6A8ABA0AD17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9F78D28-3962-4052-AD6E-D6A8ABA0AD17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9F78D28-3962-4052-AD6E-D6A8ABA0AD17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9F78D28-3962-4052-AD6E-D6A8ABA0AD17}.Release|Any CPU.Build.0 = Release|Any CPU
+		{518DB1F9-D8E0-42F7-84F7-0D280134CC3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{518DB1F9-D8E0-42F7-84F7-0D280134CC3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{518DB1F9-D8E0-42F7-84F7-0D280134CC3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{518DB1F9-D8E0-42F7-84F7-0D280134CC3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{128DC24D-77A5-4CF3-A489-F5D6B32E7D09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{128DC24D-77A5-4CF3-A489-F5D6B32E7D09}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{128DC24D-77A5-4CF3-A489-F5D6B32E7D09}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{128DC24D-77A5-4CF3-A489-F5D6B32E7D09}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

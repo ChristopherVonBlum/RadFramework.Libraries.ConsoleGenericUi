@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>netcoreapp3.1;netcoreapp2.1</TargetFrameworks>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="RadFramework.Libraries.Ioc" Version="1.0.9" />
+      <PackageReference Include="RadFramework.Libraries.Reflection" Version="1.0.8" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\RadFramework.Libraries.Ioc\src\RadFramework.Libraries.Ioc\RadFramework.Libraries.Ioc.csproj" />
+    </ItemGroup>
+
+</Project>
