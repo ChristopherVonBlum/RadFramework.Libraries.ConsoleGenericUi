@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices.WindowsRuntime;
+using Newtonsoft.Json;
 using RadFramework.Libraries.ConsoleGenericUi.Abstractions;
 using RadFramework.Libraries.Ioc;
 using RadFramework.Libraries.Reflection.Caching;
@@ -15,11 +15,13 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Interaction
     {
         private readonly IConsole _console;
 
+        public readonly List<object> clipboard = new List<object>();
+
         public ConsoleInteractionProvider(IConsole console)
         {
             _console = console;
         }
-
+        
         public void RenderServiceOverview(IContainer container)
         {
             while (true)
@@ -32,9 +34,9 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Interaction
 
                 foreach ((Type serviceType, Func<object> resolve) service in container.Services)
                 {
-                 _console.WriteLine($"{i}) {service.serviceType.FullName}");
-                 choices[i] = service;
-                 i++;
+                    _console.WriteLine($"{i}) {service.serviceType.FullName}");
+                    choices[i] = service;
+                    i++;
                 }
                 
                 string input = _console.ReadLine();
@@ -55,15 +57,25 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Interaction
                     continue;
                 }
                 
+                if (choice >= choices.Count + 1)
+                {
+                    _console.WriteLine($"{choice} is out of range.");
+                    continue;
+                }
+                
                 var selectedService = choices[choice];
 
-                EditObject(selectedService.serviceType, container.Resolve(selectedService.serviceType));
+                EditObject(selectedService.serviceType, container.Resolve(selectedService.serviceType), out var o);
             }
         }
         
-        public bool EditObject(CachedType t, object o)
+        public bool EditObject<T>(CachedType t, T obj, out T modified)
         {
-            _console.WriteLine($"Edit object of type {t.InnerMetaData.FullName}:");
+            T cloned = (T)JsonConvert.DeserializeObject(JsonConvert.SerializeObject(obj, t, Formatting.None,
+                new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.All
+            }), t);
             
             Dictionary<int, object> choose = new Dictionary<int, object>();
             
@@ -89,6 +101,8 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Interaction
 
             while(true)
             {
+                _console.WriteLine($"Edit object of type {t.InnerMetaData.FullName}:");
+                
                 i = 1;
 
                 if (properties.Any())
@@ -113,17 +127,27 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Interaction
                     }
                 }
 
-                _console.WriteLine("Choose property or method: (x to cancel, ok to confirm)");
+                _console.WriteLine("Choose property or method: (x to cancel, ok to confirm, export to export the object, copy to copy the object)");
                 
                 input = _console.ReadLine();
                 
                 if (input == "x")
                 {
+                    modified = obj;
                     return false;
                 }
                 else if (input == "ok")
                 {
+                    modified = cloned;
                     return true;
+                }
+                else if (input == "export")
+                {
+                    Console.WriteLine(JsonConvert.SerializeObject(cloned, Formatting.Indented));
+                }
+                else if (input == "copy")
+                {
+                    StoreObjectInClipboard(obj);
                 }
 
                 int choice;
@@ -137,19 +161,64 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Interaction
                     continue;
                 }
 
+                if (choice > choose.Count)
+                {
+                    _console.WriteLine($"{choice} is out of range.");
+                    continue;
+                }
+
                 object metaData = choose[choice];
 
                 if (metaData is CachedPropertyInfo p)
                 {
-                    AssignProperty(p, o);
+                    AssignProperty(p, cloned);
                 }
                 else if (metaData is CachedMethodInfo m)
                 {
-                    CreateMethodInvocation(m, o);
+                    CreateMethodInvocation(m, cloned);
                 }
             }
         }
 
+        private void StoreObjectInClipboard(object value)
+        {
+            foreach (object obj in clipboard)
+            {
+                _console.WriteLine(obj.GetType().FullName);
+            }
+            
+            while (true)
+            {
+                _console.WriteLine("index to store object at: (x to cancel)");
+                
+                string cmd = _console.ReadLine();
+
+                if (cmd == "x")
+                {
+                    return;
+                }
+
+                int index;
+                
+                try
+                { 
+                    index = int.Parse(cmd);
+                }
+                catch
+                {
+                    continue;
+                }
+
+                if (index >= clipboard.Count)
+                {
+                    clipboard.Add(value);
+                    return;
+                }
+                
+                clipboard[index] = value;
+            }
+        }
+        
         private void CreateMethodInvocation(CachedMethodInfo cachedMethodInfo, object o)
         {
             var parameters = cachedMethodInfo.Query(MethodBaseQueries.GetParameters);
@@ -160,20 +229,24 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Interaction
             {
                 CachedType parameterType = parameterInfo.ParameterType;
 
-                _console.WriteLine($"Provide Argument {parameterInfo.Name} of type {parameterType.InnerMetaData.FullName}:");
-                
-                string argument = _console.ReadLine();
-                
                 if (parameterType.InnerMetaData == typeof(string))
                 {
+                    _console.WriteLine($"Provide Argument {parameterInfo.Name} of type {parameterType.InnerMetaData.FullName}:");
+                    
+                    string argument = _console.ReadLine();
+                    
                     arguments[parameterInfo] = argument;
                 }
                 else if (parameterType.InnerMetaData.IsPrimitive)
                 {
+                    _console.WriteLine($"Provide Argument {parameterInfo.Name} of type {parameterType.InnerMetaData.FullName}:");
+                    
                     var parseMethod = GetParseMethod(parameterType);
 
                     object parsedValue = null;
                 
+                    string argument = _console.ReadLine();
+                    
                     while (true)
                     {
                         try
@@ -194,7 +267,7 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Interaction
                 {
                     var obj = Activator.Activate(parameterType);
 
-                    EditObject(parameterType, obj);
+                    EditObject(parameterType, obj, out obj);
 
                     arguments[parameterInfo] = obj;
                 }
@@ -202,7 +275,12 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Interaction
 
             var args= parameters.Select(p => arguments[p]).ToArray();
 
-            Console.WriteLine(cachedMethodInfo.InnerMetaData.Invoke(o, args));
+            if (cachedMethodInfo.InnerMetaData.ReturnType == typeof(void))
+            {
+                return;
+            }
+            
+            EditObject(cachedMethodInfo.InnerMetaData.ReturnType, cachedMethodInfo.InnerMetaData.Invoke(o, args), out object v);
         }
 
         private void AssignProperty(CachedPropertyInfo cachedPropertyInfo, object o)
@@ -217,7 +295,7 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Interaction
             }
             else if (cachedPropertyInfo.InnerMetaData.PropertyType.IsPrimitive)
             {
-                var parseMethod = GetParseMethod(cachedPropertyInfo.InnerMetaData.DeclaringType);
+                var parseMethod = GetParseMethod(cachedPropertyInfo.InnerMetaData.PropertyType);
 
                 object parsedValue = null;
                 
@@ -238,7 +316,7 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Interaction
             }
             else if (cachedPropertyInfo.InnerMetaData.PropertyType.IsClass || cachedPropertyInfo.InnerMetaData.PropertyType.IsInterface)
             {
-                EditObject(cachedPropertyInfo.InnerMetaData.PropertyType, o);
+                EditObject(cachedPropertyInfo.InnerMetaData.PropertyType, o, out o);
             }
         }
 

@@ -29,9 +29,28 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Tests
             
             var args = new Args();
             
-            Assert.IsTrue(interactionProvider.EditObject(typeof(Args), args));
+            Assert.IsTrue(interactionProvider.EditObject(typeof(Args), args, out args));
             
             Assert.AreEqual(args.Prop1, "argument for Prop1");
+        }
+        
+        [Test]
+        public void Copy()
+        {
+            var console = new UnitTestProvider(new List<string>
+            {
+                "copy",
+                "0",
+                "ok"
+            });
+            
+            var interactionProvider = new ConsoleInteractionProvider(console);
+            
+            var args = new Args { Prop1 = "test" };
+            
+            Assert.IsTrue(interactionProvider.EditObject(typeof(Args), args, out args));
+            
+            Assert.IsTrue(((Args)interactionProvider.clipboard[0]).Prop1 == "test");
         }
         
         [Test]
@@ -53,17 +72,66 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Tests
             
             interactionProvider.RenderServiceOverview(c);
         }
+        
+        [Test]
+        public void Test3()
+        {
+            var console = new UnitTestProvider(new List<string>
+            {
+                "1", // first service
+                "1", // first method
+                "x", // back to overview
+                "x" 
+            });
+            
+            Container c = new Container();
+
+            c.RegisterSingleton(typeof(MyService), typeof(MyService));
+            
+            var interactionProvider = new ConsoleInteractionProvider(console);
+            
+            interactionProvider.RenderServiceOverview(c);
+        }
+
+        [Test]
+        public void Test4()
+        {
+            var console = new UnitTestProvider(new List<string>
+            {
+                "1", // first service
+                "2", // second method
+                "1", // first property of parameter
+                "abc", // value for property
+                "x",
+                "x",
+                "x"
+            });
+            
+            Container c = new Container();
+
+            c.RegisterSingleton(typeof(MyService), typeof(MyService));
+            
+            var interactionProvider = new ConsoleInteractionProvider(console);
+            
+            interactionProvider.RenderServiceOverview(c);
+        }
     }
 
+    public class MyDto
+    {
+        public string Prop { get; set; }
+    }
+    
     public class MyService
     {
-        public MyService()
-        {
-            
-        }
         public void PrintA()
         {
             Console.WriteLine("A");
+        }
+        
+        public void TestParam(MyDto dto)
+        {
+            Console.WriteLine(dto.Prop);
         }
     }
     

@@ -6,6 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
       <PackageReference Include="RadFramework.Libraries.Ioc" Version="1.0.9" />
       <PackageReference Include="RadFramework.Libraries.Reflection" Version="1.0.8" />
     </ItemGroup>

@@ -23,6 +23,13 @@ namespace POC
 
     public class MyService
     {
-        
+        public int TestProp { get; set; }
+        public DateTime TestDate { get; set; }
+        public float TestFloat { get; set; }
+
+        public int TestResult(int a, int b)
+        {
+            return a + b * a;
+        }
     }
 }
