@@ -52,6 +52,27 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Tests
             
             Assert.IsTrue(((Args)interactionProvider.clipboard[0]).Prop1 == "test");
         }
+
+        [Test]
+        public void Paste()
+        {
+            var console = new UnitTestProvider(new List<string>
+            {
+                "paste",
+                "0",
+                "ok"
+            });
+            
+            var interactionProvider = new ConsoleInteractionProvider(console);
+            
+            interactionProvider.clipboard.Add(new MyDto() { Prop = "abc" });
+            
+            var myDto = new MyDto() { Prop = "test" };
+            
+            Assert.IsTrue(interactionProvider.EditObject(typeof(MyDto), myDto, out myDto));
+            
+            Assert.IsTrue(myDto.Prop == "abc");
+        }
         
         [Test]
         public void Test2()

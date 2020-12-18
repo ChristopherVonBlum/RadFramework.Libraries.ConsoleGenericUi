@@ -209,10 +209,17 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Interaction
                 else if (input == "export")
                 {
                     Console.WriteLine(JsonConvert.SerializeObject(cloned, Formatting.Indented));
+                    continue;
                 }
                 else if (input == "copy")
                 {
                     StoreObjectInClipboard(obj);
+                    continue;
+                }
+                else if (input == "paste")
+                {
+                    cloned = modified = (T)PasteObjectFromClipboard();
+                    continue;
                 }
 
                 int choice;
@@ -242,6 +249,42 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Interaction
                 {
                     CreateMethodInvocation(m, cloned);
                 }
+            }
+        }
+
+        private object PasteObjectFromClipboard()
+        {
+            int i = 1;
+            
+            foreach (object obj in clipboard)
+            {
+                _console.WriteLine($"{i}) {obj.GetType().FullName}");
+                i++;
+            }
+
+            while (true)
+            {
+                _console.WriteLine("index to paste object from:");
+                
+                string cmd = _console.ReadLine();
+            
+                int index;
+            
+                try
+                {
+                    index = int.Parse(cmd);
+                }
+                catch
+                {
+                    continue;
+                }
+
+                if (index >= clipboard.Count)
+                {
+                    continue;
+                }
+            
+                return clipboard[index];
             }
         }
 
