@@ -1,4 +1,5 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/Environment/Highlighting/HighlightingSourceSnapshotLocation/@EntryValue">/home/anon/.cache/JetBrains/Rider2020.3/resharper-host/temp/Rider/vAny/CoverageData/_RadFramework.Libraries.ConsoleGenericUi.334655605/Snapshot/snapshot.utdcvr</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=347be7be_002Df3e4_002D48ee_002D8946_002D9b70f340b0f5/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="Session" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
   &lt;And&gt;
     &lt;Project Location="/home/anon/Documents/repos/RadFramework.Libraries.ConsoleGenericUi/src/RadFramework.Libraries.ConsoleGenericUi.Tests" Presentation="&amp;lt;RadFramework.Libraries.ConsoleGenericUi.Tests&amp;gt;" /&gt;

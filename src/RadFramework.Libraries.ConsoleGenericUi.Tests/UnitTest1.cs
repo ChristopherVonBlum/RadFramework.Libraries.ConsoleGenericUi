@@ -16,13 +16,13 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Tests
         }
 
         [Test]
-        public void Test1()
+        public void AssignProperty()
         {
             var console = new UnitTestProvider(new List<string>
             {
-                "1",
-                "argument for Prop1",
-                "ok"
+                "1", // first property
+                "argument for Prop1", // value for property
+                "ok" // confirm
             });
             
             var interactionProvider = new ConsoleInteractionProvider(console);
@@ -75,14 +75,14 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Tests
         }
         
         [Test]
-        public void Test2()
+        public void RenderServiceOverview()
         {
             var console = new UnitTestProvider(new List<string>
             {
                 "1", // first service
                 "1", // first method
                 "x", // back to overview
-                "x" 
+                "x" // exit overview
             });
             
             Container c = new Container();
@@ -95,14 +95,14 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Tests
         }
         
         [Test]
-        public void Test3()
+        public void InvokeMethod()
         {
             var console = new UnitTestProvider(new List<string>
             {
                 "1", // first service
                 "1", // first method
                 "x", // back to overview
-                "x" 
+                "x" // exit overview
             });
             
             Container c = new Container();
@@ -115,15 +115,15 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Tests
         }
 
         [Test]
-        public void Test4()
+        public void InvokeMethodWithParameter()
         {
             var console = new UnitTestProvider(new List<string>
             {
                 "2", // second method
-                "1", // first property of parameter
+                "1", // first property of parameter type
                 "abc", // value for property
-                "ok", // 
-                "x"
+                "ok", // confirm changes on object
+                "x" // 
             });
             
             var interactionProvider = new ConsoleInteractionProvider(console);

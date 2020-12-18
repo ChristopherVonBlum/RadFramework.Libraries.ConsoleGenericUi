@@ -389,7 +389,13 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Interaction
             {
                 return;
             }
-            
+            else if (cachedMethodInfo.InnerMetaData.ReturnType.IsPrimitive || cachedMethodInfo.InnerMetaData.ReturnType == typeof(string))
+            {
+                _console.WriteLine("Return value:");
+                _console.WriteLine(result.ToString());
+                return;
+            }
+
             EditObject(cachedMethodInfo.InnerMetaData.ReturnType, result, out object v);
         }
 
