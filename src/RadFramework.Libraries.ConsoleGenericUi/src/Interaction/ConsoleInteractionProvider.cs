@@ -65,7 +65,72 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Interaction
                 
                 var selectedService = choices[choice];
 
-                EditObject(selectedService.serviceType, container.Resolve(selectedService.serviceType), out var o);
+                RenderService(selectedService.serviceType, container.Resolve(selectedService.serviceType));
+            }
+        }
+
+        public void RenderService(CachedType tService, object serviceObject)
+        {
+            Dictionary<int, CachedMethodInfo> choose = new Dictionary<int, CachedMethodInfo>();
+            
+            int i = 1;
+            
+            IEnumerable<CachedMethodInfo> methods = tService.Query(TypeQueries.GetMethods).Select(m => (CachedMethodInfo)m);
+            
+            foreach (var methodInfo in methods)
+            {
+                choose[i] = methodInfo;
+                i++;
+            }
+            
+            while(true)
+            {
+                _console.WriteLine($"Service of type {tService.InnerMetaData.FullName}:");
+                
+                i = 1;
+                
+                if (methods.Any())
+                {
+                    _console.WriteLine("Methods:");
+                    
+                    foreach (var methodInfo in methods)
+                    {
+                        _console.WriteLine($"{i}) {methodInfo.InnerMetaData.Name}");
+                        i++;
+                    }
+                }
+
+                string input;
+                
+                _console.WriteLine("Choose property or method: (x to return)");
+                
+                input = _console.ReadLine();
+                
+                if (input == "x")
+                {
+                    return;
+                }
+
+                int choice;
+
+                try
+                {
+                    choice = int.Parse(input);
+                }
+                catch
+                {
+                    continue;
+                }
+
+                if (choice > choose.Count)
+                {
+                    _console.WriteLine($"{choice} is out of range.");
+                    continue;
+                }
+
+                CachedMethodInfo metaData = choose[choice];
+                
+                CreateMethodInvocation(metaData, serviceObject);
             }
         }
         
@@ -275,12 +340,14 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Interaction
 
             var args= parameters.Select(p => arguments[p]).ToArray();
 
+            object result = cachedMethodInfo.InnerMetaData.Invoke(o, args);
+            
             if (cachedMethodInfo.InnerMetaData.ReturnType == typeof(void))
             {
                 return;
             }
             
-            EditObject(cachedMethodInfo.InnerMetaData.ReturnType, cachedMethodInfo.InnerMetaData.Invoke(o, args), out object v);
+            EditObject(cachedMethodInfo.InnerMetaData.ReturnType, result, out object v);
         }
 
         private void AssignProperty(CachedPropertyInfo cachedPropertyInfo, object o)

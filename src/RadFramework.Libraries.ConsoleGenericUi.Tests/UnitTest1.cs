@@ -98,22 +98,20 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Tests
         {
             var console = new UnitTestProvider(new List<string>
             {
-                "1", // first service
                 "2", // second method
                 "1", // first property of parameter
                 "abc", // value for property
-                "x",
-                "x",
+                "ok", // 
                 "x"
             });
             
-            Container c = new Container();
-
-            c.RegisterSingleton(typeof(MyService), typeof(MyService));
-            
             var interactionProvider = new ConsoleInteractionProvider(console);
             
-            interactionProvider.RenderServiceOverview(c);
+            var myService = new MyService();
+            
+            interactionProvider.RenderService(typeof(MyService), myService);
+
+            Assert.IsTrue(myService.TestParamValue == "abc");
         }
     }
 
@@ -124,6 +122,7 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Tests
     
     public class MyService
     {
+        public string TestParamValue;
         public void PrintA()
         {
             Console.WriteLine("A");
@@ -132,6 +131,7 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Tests
         public void TestParam(MyDto dto)
         {
             Console.WriteLine(dto.Prop);
+            TestParamValue = dto.Prop;
         }
     }
     
