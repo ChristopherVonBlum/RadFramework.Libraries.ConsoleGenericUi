@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using Newtonsoft.Json;
@@ -7,6 +8,7 @@ using RadFramework.Libraries.ConsoleGenericUi.Abstractions;
 using RadFramework.Libraries.Ioc;
 using RadFramework.Libraries.Reflection.Caching;
 using RadFramework.Libraries.Reflection.Caching.Queries;
+using RadFramework.Libraries.TextTranslation.Abstractions;
 using Activator = RadFramework.Libraries.Reflection.Activation.Activator;
 
 namespace RadFramework.Libraries.ConsoleGenericUi.Interaction
@@ -14,19 +16,21 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Interaction
     public class ConsoleInteractionProvider
     {
         private readonly IConsole _console;
+        private readonly ITranslationProvider _translationProvider;
 
         public readonly List<object> clipboard = new List<object>();
 
-        public ConsoleInteractionProvider(IConsole console)
+        public ConsoleInteractionProvider(IConsole console, ITranslationProvider translationProvider)
         {
             _console = console;
+            _translationProvider = translationProvider;
         }
         
         public void RenderServiceOverview(IContainer container)
         {
             while (true)
-            {            
-                _console.WriteLine("Choose a service:");
+            {
+                _console.WriteLine(_translationProvider.Translate("ChooseService"));
                 
                 int i = 1;
                 
@@ -59,7 +63,7 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Interaction
                 
                 if (choice >= choices.Count + 1)
                 {
-                    _console.WriteLine($"{choice} is out of range.");
+                    _console.WriteLine($"{choice} {_translationProvider.Translate("IsOutOfRange")}");
                     continue;
                 }
                 
@@ -85,13 +89,13 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Interaction
             
             while(true)
             {
-                _console.WriteLine($"Service of type {tService.InnerMetaData.FullName}:");
+                _console.WriteLine($"{_translationProvider.Translate("ServiceOfType")} {tService.InnerMetaData.FullName}:");
                 
                 i = 1;
                 
                 if (methods.Any())
                 {
-                    _console.WriteLine("Methods:");
+                    _console.WriteLine($"{_translationProvider.Translate("Methods")}:");
                     
                     foreach (var methodInfo in methods)
                     {
@@ -102,7 +106,7 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Interaction
 
                 string input;
                 
-                _console.WriteLine("Choose property or method: (x to return)");
+                _console.WriteLine($"{_translationProvider.Translate("ChoosePropertyOrMethod")}");
                 
                 input = _console.ReadLine();
                 
@@ -124,7 +128,7 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Interaction
 
                 if (choice > choose.Count)
                 {
-                    _console.WriteLine($"{choice} is out of range.");
+                    _console.WriteLine($"{choice} {_translationProvider.Translate("IsOutOfRange")}");
                     continue;
                 }
 
@@ -166,13 +170,13 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Interaction
 
             while(true)
             {
-                _console.WriteLine($"Edit object of type {t.InnerMetaData.FullName}:");
+                _console.WriteLine($"{_translationProvider.Translate("EditObjectOfType")} {t.InnerMetaData.FullName}:");
                 
                 i = 1;
 
                 if (properties.Any())
                 {
-                    _console.WriteLine("Properties:");
+                    _console.WriteLine($"{_translationProvider.Translate("Properties")}:");
                     
                     foreach (var propertyInfo in properties)
                     {
@@ -183,7 +187,7 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Interaction
 
                 if (methods.Any())
                 {
-                    _console.WriteLine("Methods:");
+                    _console.WriteLine($"{_translationProvider.Translate("Methods")}:");
                     
                     foreach (var methodInfo in methods)
                     {
@@ -192,7 +196,7 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Interaction
                     }
                 }
 
-                _console.WriteLine("Choose property or method: (x to cancel, ok to confirm, export to export the object, copy to copy the object)");
+                _console.WriteLine($"{_translationProvider.Translate("EditObjectMenu")}");
                 
                 input = _console.ReadLine();
                 
@@ -206,17 +210,17 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Interaction
                     modified = cloned;
                     return true;
                 }
-                else if (input == "export")
+                else if (input == "e")
                 {
-                    Console.WriteLine(JsonConvert.SerializeObject(cloned, Formatting.Indented));
+                    _console.WriteLine(JsonConvert.SerializeObject(cloned, Formatting.Indented));
                     continue;
                 }
-                else if (input == "copy")
+                else if (input == "c")
                 {
                     StoreObjectInClipboard(obj);
                     continue;
                 }
-                else if (input == "paste")
+                else if (input == "p")
                 {
                     cloned = modified = (T)PasteObjectFromClipboard();
                     continue;
@@ -235,7 +239,7 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Interaction
 
                 if (choice > choose.Count)
                 {
-                    _console.WriteLine($"{choice} is out of range.");
+                    _console.WriteLine($"{choice} {_translationProvider.Translate("IsOutOfRange")}");
                     continue;
                 }
 
@@ -264,7 +268,7 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Interaction
 
             while (true)
             {
-                _console.WriteLine("index to paste object from:");
+                _console.WriteLine("Index to paste object from:");
                 
                 string cmd = _console.ReadLine();
             
@@ -290,9 +294,12 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Interaction
 
         private void StoreObjectInClipboard(object value)
         {
+            int i = 1;
+            
             foreach (object obj in clipboard)
             {
-                _console.WriteLine(obj.GetType().FullName);
+                _console.WriteLine($"{i}) {obj.GetType().FullName}");
+                i++;
             }
             
             while (true)
@@ -339,7 +346,7 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Interaction
 
                 if (parameterType.InnerMetaData == typeof(string))
                 {
-                    _console.WriteLine($"Provide Argument {parameterInfo.Name} of type {parameterType.InnerMetaData.FullName}:");
+                    _console.WriteLine(string.Format(_translationProvider.Translate("ProvideArgumentOfType"), parameterInfo.Name, parameterType.InnerMetaData.FullName));
                     
                     string argument = _console.ReadLine();
                     
@@ -347,7 +354,7 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Interaction
                 }
                 else if (parameterType.InnerMetaData.IsPrimitive)
                 {
-                    _console.WriteLine($"Provide Argument {parameterInfo.Name} of type {parameterType.InnerMetaData.FullName}:");
+                    _console.WriteLine(string.Format(_translationProvider.Translate("ProvideArgumentOfType"), parameterInfo.Name, parameterType.InnerMetaData.FullName));
                     
                     var parseMethod = GetParseMethod(parameterType);
 
@@ -365,7 +372,7 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Interaction
                         catch (Exception e)
                         {
                             Console.WriteLine(e.ToString());
-                            Console.WriteLine($"Provide Argument {parameterInfo.Name} of type {parameterType.InnerMetaData.FullName}:");
+                            _console.WriteLine(string.Format(_translationProvider.Translate("ProvideArgumentOfType"), parameterInfo.Name, parameterType.InnerMetaData.FullName));
                         }
                     }
                     
@@ -391,7 +398,7 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Interaction
             }
             else if (cachedMethodInfo.InnerMetaData.ReturnType.IsPrimitive || cachedMethodInfo.InnerMetaData.ReturnType == typeof(string))
             {
-                _console.WriteLine("Return value:");
+                _console.WriteLine(_translationProvider.Translate("ReturnValue"));
                 _console.WriteLine(result.ToString());
                 return;
             }
@@ -401,7 +408,7 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Interaction
 
         private void AssignProperty(CachedPropertyInfo cachedPropertyInfo, object o)
         {
-            _console.WriteLine($"Assign value to {cachedPropertyInfo.InnerMetaData.Name} of type {cachedPropertyInfo.InnerMetaData.PropertyType.FullName}:");
+            _console.WriteLine(string.Format(_translationProvider.Translate("AssignValueOfType"), cachedPropertyInfo.InnerMetaData.Name, cachedPropertyInfo.InnerMetaData.PropertyType.FullName));
             
             var value = _console.ReadLine();
             
