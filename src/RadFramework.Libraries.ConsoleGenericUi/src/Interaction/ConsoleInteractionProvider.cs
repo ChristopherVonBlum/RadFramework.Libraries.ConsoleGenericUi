@@ -268,7 +268,7 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Interaction
 
             while (true)
             {
-                _console.WriteLine("Index to paste object from:");
+                _console.WriteLine(_translationProvider.Translate("IndexToPasteFrom"));
                 
                 string cmd = _console.ReadLine();
             
@@ -304,7 +304,7 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Interaction
             
             while (true)
             {
-                _console.WriteLine("index to store object at: (x to cancel)");
+                _console.WriteLine(_translationProvider.Translate("IndexToStoreObject"));
                 
                 string cmd = _console.ReadLine();
 

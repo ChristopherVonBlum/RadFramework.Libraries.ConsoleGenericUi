@@ -10,7 +10,9 @@
       "EditObjectMenu" : "Choose property or method: (x to cancel, ok to confirm, e to export the object, c to copy the object, p to paste a object)",
       "ProvideArgumentOfType" : "Provide Argument {0} of type {1}:",
       "ReturnValue" : "Return value:",
-      "AssignValueOfType" : "Assign value to {0} of type {1}:"
+      "AssignValueOfType" : "Assign value to {0} of type {1}:",
+      "IndexToPasteFrom" : "Index to paste object from:",
+      "IndexToStoreObject" : "index to store object at: (x to cancel)"
     }
   },
   {
@@ -26,7 +28,9 @@
       "EditObjectMenu" : "Eigenschaft oder Methode wählen: (x zum abbrechen, ok zum bestätigen, e zum exportieren, c zum kopieren, p zum einfügen)",
       "ProvideArgumentOfType" : "Argument {0} des Types {1} eingeben:",
       "ReturnValue" : "Rückgabewert:",
-      "AssignValueOfType" : "Wert {0} des Types {1} zuweisen:"
+      "AssignValueOfType" : "Wert {0} des Types {1} zuweisen:",
+      "IndexToPasteFrom" : "Index des Objektes das einfügt werden soll eingeben:",
+      "IndexToStoreObject" : "Index eingeben an dem das Objekt gespeichert werden soll: (x zum abbrechen)"
     }
   }
 ]
