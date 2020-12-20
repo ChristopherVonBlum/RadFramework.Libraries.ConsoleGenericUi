@@ -8,7 +8,9 @@ using RadFramework.Libraries.ConsoleGenericUi.Abstractions;
 using RadFramework.Libraries.Ioc;
 using RadFramework.Libraries.Reflection.Caching;
 using RadFramework.Libraries.Reflection.Caching.Queries;
+using RadFramework.Libraries.TextTranslation;
 using RadFramework.Libraries.TextTranslation.Abstractions;
+using RadFramework.Libraries.TextTranslation.Loaders;
 using Activator = RadFramework.Libraries.Reflection.Activation.Activator;
 
 namespace RadFramework.Libraries.ConsoleGenericUi.Interaction
@@ -24,6 +26,16 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Interaction
         {
             _console = console;
             _translationProvider = translationProvider;
+        }
+
+        public ConsoleInteractionProvider(IConsole console)
+            : this(
+                console, 
+                new TranslationProvider(
+                    new TranslationDictionaryEmbeddedResourceLoader(
+                        Assembly.GetExecutingAssembly(), 
+                        "RadFramework.Libraries.ConsoleGenericUi.ConsoleInteractionProviderTranslations.json")))
+        {
         }
         
         public void RenderServiceOverview(IContainer container)

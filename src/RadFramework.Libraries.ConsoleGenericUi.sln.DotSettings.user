@@ -5,4 +5,5 @@
     &lt;Project Location="/home/anon/Documents/repos/RadFramework.Libraries.ConsoleGenericUi/src/RadFramework.Libraries.ConsoleGenericUi.Tests" Presentation="&amp;lt;RadFramework.Libraries.ConsoleGenericUi.Tests&amp;gt;" /&gt;
     &lt;Namespace&gt;RadFramework.Libraries.ConsoleGenericUi.Tests&lt;/Namespace&gt;
   &lt;/And&gt;
-&lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
+&lt;/SessionState&gt;</s:String>
+	</wpf:ResourceDictionary>

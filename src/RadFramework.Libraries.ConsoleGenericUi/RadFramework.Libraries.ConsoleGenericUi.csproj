@@ -3,13 +3,14 @@
     <PropertyGroup>
         <TargetFrameworks>netcoreapp3.1;netcoreapp2.1</TargetFrameworks>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageVersion>1.0.0</PackageVersion>
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-      <PackageReference Include="RadFramework.Libraries.Ioc" Version="1.0.9" />
+      <PackageReference Include="RadFramework.Libraries.Ioc" Version="1.0.10" />
       <PackageReference Include="RadFramework.Libraries.Reflection" Version="1.0.8" />
-      <PackageReference Include="RadFramework.Libraries.TextTranslation" Version="1.0.5" />
+      <PackageReference Include="RadFramework.Libraries.TextTranslation" Version="1.0.7" />
     </ItemGroup>
 
     <ItemGroup>

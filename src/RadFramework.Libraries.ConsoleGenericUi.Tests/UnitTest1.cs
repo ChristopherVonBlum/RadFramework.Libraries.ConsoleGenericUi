@@ -39,7 +39,7 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Tests
         {
             var console = new UnitTestProvider(new List<string>
             {
-                "copy",
+                "c",
                 "0",
                 "ok"
             });
@@ -58,7 +58,7 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Tests
         {
             var console = new UnitTestProvider(new List<string>
             {
-                "paste",
+                "p",
                 "0",
                 "ok"
             });
