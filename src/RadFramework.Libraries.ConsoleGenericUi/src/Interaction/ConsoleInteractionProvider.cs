@@ -300,7 +300,9 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Interaction
                     continue;
                 }
             
-                return clipboard[index];
+                var fromClipboard = clipboard[index];
+
+                return CloneObject(fromClipboard);
             }
         }
 
@@ -336,14 +338,34 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Interaction
                     continue;
                 }
 
+                var cloned = CloneObject(value);
+
                 if (index >= clipboard.Count)
                 {
-                    clipboard.Add(value);
+                    clipboard.Add(cloned);
                     return;
                 }
                 
-                clipboard[index] = value;
+                clipboard[index] = cloned;
             }
+        }
+
+        private object CloneObject(object o)
+        {
+            Type t = o.GetType();
+
+            if (o is ICloneable c)
+            {
+                return c.Clone();
+            }
+            
+            var cloned = JsonConvert.DeserializeObject(JsonConvert.SerializeObject(o, t, Formatting.None,
+                new JsonSerializerSettings
+                {
+                    TypeNameHandling = TypeNameHandling.All
+                }), t);
+
+            return cloned;
         }
         
         private void CreateMethodInvocation(CachedMethodInfo cachedMethodInfo, object o)
@@ -400,7 +422,7 @@ namespace RadFramework.Libraries.ConsoleGenericUi.Interaction
                 }
             }
 
-            var args= parameters.Select(p => arguments[p]).ToArray();
+            var args = parameters.Select(p => arguments[p]).ToArray();
 
             object result = cachedMethodInfo.InnerMetaData.Invoke(o, args);
             
